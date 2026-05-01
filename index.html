@@ -3,147 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Images to PDF - Professional Converter</title>
+    <title>Premium Image to PDF Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
         :root {
-            --bg-dark: #1e2128;
-            --card-bg: #2b2f3a;
-            --primary-orange: #f39c12;
-            --accent-blue: #3498db;
-            --text-main: #ffffff;
-            --text-dim: #aeb1b7;
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
         }
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            text-align: center;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* Navbar Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 25px;
-            background: #252930;
-            border-bottom: 1px solid #3d424d;
-        }
-        .logo { font-size: 22px; font-weight: 800; color: var(--accent-blue); letter-spacing: 1px; }
-        .nav-icons i { font-size: 18px; margin-left: 20px; cursor: pointer; color: var(--text-dim); }
-
-        /* Main Container */
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 40px 20px;
         }
-        h1 { font-size: 32px; margin-bottom: 8px; }
-        .subtitle { color: var(--text-dim); margin-bottom: 35px; font-size: 15px; }
 
-        /* Professional Upload Card */
-        .tool-card {
-            background: var(--card-bg);
-            border-radius: 12px;
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        /* Main Converter Card */
+        .glass-card {
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Upload Area */
+        .upload-zone {
+            border: 2px dashed #475569;
+            border-radius: 20px;
             padding: 40px 20px;
-            border: 2px dashed #454d5d;
-            position: relative;
-            transition: 0.3s;
-        }
-        .tool-card:hover { border-color: var(--accent-blue); }
-
-        .btn-main {
-            background: var(--primary-orange);
-            color: white;
-            padding: 16px 45px;
-            border: none;
-            border-radius: 35px;
-            font-size: 20px;
-            font-weight: bold;
+            transition: all 0.3s ease;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
+            background: rgba(15, 23, 42, 0.5);
         }
-        .btn-main:hover { transform: scale(1.05); background: #e67e22; }
-
-        .convert-btn {
-            background: #27ae60;
-            margin-top: 20px;
-            display: none; /* Select hone par dikhega */
-            width: 80%;
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
         }
 
-        /* Preview area */
-        #preview {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+        .btn-premium {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
         }
-        #preview img {
-            width: 60px;
-            height: 60px;
+        .btn-premium:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Preview Grid */
+        #previewGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .preview-item {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
             object-fit: cover;
-            border-radius: 6px;
-            border: 2px solid var(--accent-blue);
+            border: 2px solid var(--primary);
+            animation: zoomIn 0.5s;
         }
 
-        /* Ad Slots */
-        .ad-placeholder {
-            margin: 30px 0;
-            background: #161a20;
-            border-radius: 8px;
-            padding: 10px;
-            color: #555;
-            font-size: 12px;
-            border: 1px solid #2d333d;
+        /* Download Section */
+        #downloadSection {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 15px;
+            border: 1px solid #22c55e;
         }
 
-        /* Instructions */
-        .info-section {
+        /* Professional Guide Styling */
+        .guide-section {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
             text-align: left;
-            margin-top: 40px;
-            border-top: 1px solid #3d424d;
-            padding-top: 20px;
         }
-        .info-section h3 { color: var(--accent-blue); }
-        .info-section p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+        @media (max-width: 768px) { .guide-section { grid-template-columns: 1fr; } }
+
+        .guide-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .guide-box h3 { color: #818cf8; margin-top: 0; }
+        .guide-box ul { list-style: none; padding: 0; }
+        .guide-box li { margin-bottom: 12px; font-size: 0.95rem; display: flex; align-items: flex-start; }
+        .guide-box li i { margin-right: 10px; color: #22c55e; margin-top: 4px; }
 
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">PDF24 CLONE</div>
-    <div class="nav-icons">
-        <i class="fas fa-sun"></i>
-        <i class="fas fa-bars" onclick="alert('Menu: Home, Guide, Privacy Policy')"></i>
+<div class="container animate__animated animate__fadeIn">
+    
+    <div class="header">
+        <h1>SwiftPDF Pro</h1>
+        <p style="color: #94a3b8;">Transform your images into professional PDF documents instantly.</p>
     </div>
-</header>
 
-<div class="container">
-    <h1>Images to PDF</h1>
-    <p class="subtitle">User friendly web app to convert photos and other images to PDF quickly and easily</p>
+    <div class="glass-card">
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h3>Choose Files or Drag & Drop</h3>
+            <p style="color: #64748b;">Supports JPG, PNG, WEBP</p>
+            <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+        </div>
 
-    <div class="ad-placeholder">ADVERTISEMENT (Top)</div>
+        <div id="previewGrid"></div>
+        <p id="fileStatus" style="margin-top: 20px; font-weight: 500; color: #818cf8;"></p>
 
-    <div class="tool-card" id="dropArea">
-        <input id="fileInput" type="file" accept="image/*" multiple style="display:none;">
-        
-        <button class="btn-main" onclick="document.getElementById('fileInput').click()">
-            Choose files
+        <button id="convertBtn" class="btn-premium animate__animated animate__pulse animate__infinite" style="display: none; width: 100%; margin-top: 20px;" onclick="generatePDF()">
+            <i class="fas fa-magic"></i> Convert to PDF
         </button>
+
+        <div id="downloadSection" class="animate__animated animate__bounceIn">
+            <p>🎉 Your PDF is ready for download!</p>
+            <button class="btn-premium" style="background: #22c55e;" onclick="downloadFinalPDF()">
+                <i class="fas fa-download"></i> Download PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <div class="guide-box">
+            <h3>🟢 How It Works</h3>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Click on Choose File or drag & drop your images</li>
+                <li><i class="fas fa-check-circle"></i> Selected images will appear in the preview section</li>
+                <li><i class="fas fa-check-circle"></i> Arrange or remove images if needed</li>
+                <li><i class="fas fa-check-circle"></i> Click on Convert to PDF button</li>
+                <li><i class="fas fa-check-circle"></i> Wait a few seconds while the file is being created</li>
+                <li><i class="fas fa-check-circle"></i> Click Download PDF to save your file</li>
+            </ul>
+        </div>
+
+        <div class="guide-box">
+            <h3>⚙️ The Process</h3>
+            <ul>
+                <li><i class="fas fa-cog"></i> Images are processed locally for maximum privacy</li>
+                <li><i class="fas fa-cog"></i> Each image becomes a separate high-quality page</li>
+                <li><i class="fas fa-cog"></i> Smart merging into a single optimized document</li>
+                <li><i class="fas fa-cog"></i> Instant generation with zero quality loss</li>
+            </ul>
+        </div>
+
+        <div class="guide-box">
+            <h3>📌 What You Get</h3>
+            <ul>
+                <li><i class="fas fa-star"></i> Single PDF with all your combined images</li>
+                <li><i class="fas fa-star"></i> Perfect for school, office or personal use</li>
+                <li><i class="fas fa-star"></i> Responsive design works on any device</li>
+                <li><i class="fas fa-star"></i> Fast, simple and completely free</li>
+            </ul>
+        </div>
+
+        <div class="guide-box">
+            <h3>🎯 Final Result</h3>
+            <ul>
+                <li><i class="fas fa-trophy"></i> Clean, professional PDF ready in seconds</li>
+                <li><i class="fas fa-trophy"></i> Easy sharing across all platforms</li>
+                <li><i class="fas fa-trophy"></i> Reliable conversion every single time</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedImages = [];
+    let finalPDF = null;
+
+    const fileInput = document.getElementById('fileInput');
+    const previewGrid = document.getElementById('previewGrid');
+    const fileStatus = document.getElementById('fileStatus');
+    const convertBtn = document.getElementById('convertBtn');
+    const downloadSection = document.getElementById('downloadSection');
+
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+
+    function handleFiles(files) {
+        Array.from(files).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const url = URL.createObjectURL(file);
+                selectedImages.push({ file, url });
+                
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = 'preview-item';
+                previewGrid.appendChild(img);
+            }
+        });
         
-        <p style="margin-top:20px; color: var(--text-dim);">... or drop files here</p>
-        
-        <div id="preview"></div>
-        <p id="count" style="margin-top:15px; font-weight: bold; color: var(--accent-blue);"></p>
+        fileStatus.innerText = `✨ ${selectedImages.length} Images Selected`;
+        if (selectedImages.length > 0) convertBtn.style.display = 'block';
+    }
+
+    async function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        convertBtn.innerText = "Processing...";
+
+        for (let i = 0; i < selectedImages.length; i++) {
+            const img = await new Promise(res => {
+                const im = new Image();
+                im.src = selectedImages[i].url;
+                im.onload = () => res(im);
+            });
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            
+            // Scaling logic
+            let imgWidth = pageWidth - 20;
+            let imgHeight = (img.height * imgWidth) / img.width;
+
+            if (imgHeight > (pageHeight - 20)) {
+                imgHeight = pageHeight - 20;
+                imgWidth = (img.width * imgHeight) / img.height;
+            }
+
+            if (i !== 0) pdf.addPage();
+            pdf.addImage(img, 'JPEG', (pageWidth - imgWidth)/2, (pageHeight - imgHeight)/2, imgWidth, imgHeight);
+        }
+
+        finalPDF = pdf;
+        convertBtn.style.display = 'none';
+        downloadSection.style.display = 'block';
+    }
+
+    function downloadFinalPDF() {
+        if (finalPDF) {
+            finalPDF.save('SwiftPDF_Document.pdf');
+        }
+    }
+</script>
+
+</body>
+</html>
         
         <button id="convertBtn" class="btn-main convert-btn" onclick="convert()">
             Convert to PDF
