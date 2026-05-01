@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pro Image to PDF</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 20px;
+      background: #f2f2f2;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📄 Image to PDF Converter</h2>
+
+<input type="file" id="imgInput" multiple>
+<br>
+<button onclick="convert()">Convert to PDF</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+async function convert() {
+  const files = document.getElementById("imgInput").files;
+
+  if (files.length === 0) {
+    alert("Image select karo!");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+
+  // A4 size (portrait)
+  const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4"
+  });
+
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const margin = 15; // space from all sides
+
+  for (let i = 0; i < files.length; i++) {
+    const reader = new FileReader();
+
+    await new Promise(resolve => {
+      reader.onload = function(e) {
+        let img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function() {
+
+          // Fit image inside page with margin
+          const maxWidth = pageWidth - margin * 2;
+          const maxHeight = pageHeight - margin * 2;
+
+          const ratio = Math.min(
+            maxWidth / img.width,
+            maxHeight / img.height
+          );
+
+          const width = img.width * ratio;
+          const height = img.height * ratio;
+
+          // Center position
+          const x = (pageWidth - width) / 2;
+          const y = (pageHeight - height) / 2;
+
+          if (i > 0) pdf.addPage();
+
+          pdf.addImage(img, 'JPEG', x, y, width, height);
+          resolve();
+        };
+      };
+
+      reader.readAsDataURL(files[i]);
+    });
+  }
+
+  pdf.save("output.pdf");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image to PDF Tool</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Image to PDF Converter</h2>
+
+<input type="file" id="imgInput" multiple>
+<br>
+<button onclick="convert()">Convert to PDF</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+async function convert() {
+  const files = document.getElementById("imgInput").files;
+
+  if (files.length === 0) {
+    alert("Pehle image select karo!");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF(); // A4 by default
+
+  for (let i = 0; i < files.length; i++) {
+    const reader = new FileReader();
+
+    await new Promise(resolve => {
+      reader.onload = function(e) {
+        let img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function() {
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+
+          const margin = 10;
+
+          const ratio = Math.min(
+            (pageWidth - margin * 2) / img.width,
+            (pageHeight - margin * 2) / img.height
+          );
+
+          const width = img.width * ratio;
+          const height = img.height * ratio;
+
+          const x = (pageWidth - width) / 2;
+          const y = (pageHeight - height) / 2;
+
+          if (i > 0) pdf.addPage();
+
+          pdf.addImage(img, 'JPEG', x, y, width, height);
+          resolve();
+        };
+      };
+
+      reader.readAsDataURL(files[i]);
+    });
+  }
+
+  pdf.save("output.pdf");
+}
+</script>
+
+</body>
+</html>
