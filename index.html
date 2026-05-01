@@ -1,103 +1,241 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Pro Image to PDF</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      padding: 20px;
-      background: #f2f2f2;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Images to PDF - Professional Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #1e2128;
+            --card-bg: #2b2f3a;
+            --primary-orange: #f39c12;
+            --accent-blue: #3498db;
+            --text-main: #ffffff;
+            --text-dim: #aeb1b7;
+        }
 
-    h2 {
-      margin-bottom: 20px;
-    }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            text-align: center;
+        }
 
-    input, button {
-      padding: 10px;
-      margin: 10px;
-    }
+        /* Navbar Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px;
+            background: #252930;
+            border-bottom: 1px solid #3d424d;
+        }
+        .logo { font-size: 22px; font-weight: 800; color: var(--accent-blue); letter-spacing: 1px; }
+        .nav-icons i { font-size: 18px; margin-left: 20px; cursor: pointer; color: var(--text-dim); }
 
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-  </style>
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 { font-size: 32px; margin-bottom: 8px; }
+        .subtitle { color: var(--text-dim); margin-bottom: 35px; font-size: 15px; }
+
+        /* Professional Upload Card */
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 40px 20px;
+            border: 2px dashed #454d5d;
+            position: relative;
+            transition: 0.3s;
+        }
+        .tool-card:hover { border-color: var(--accent-blue); }
+
+        .btn-main {
+            background: var(--primary-orange);
+            color: white;
+            padding: 16px 45px;
+            border: none;
+            border-radius: 35px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .btn-main:hover { transform: scale(1.05); background: #e67e22; }
+
+        .convert-btn {
+            background: #27ae60;
+            margin-top: 20px;
+            display: none; /* Select hone par dikhega */
+            width: 80%;
+        }
+
+        /* Preview area */
+        #preview {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        #preview img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid var(--accent-blue);
+        }
+
+        /* Ad Slots */
+        .ad-placeholder {
+            margin: 30px 0;
+            background: #161a20;
+            border-radius: 8px;
+            padding: 10px;
+            color: #555;
+            font-size: 12px;
+            border: 1px solid #2d333d;
+        }
+
+        /* Instructions */
+        .info-section {
+            text-align: left;
+            margin-top: 40px;
+            border-top: 1px solid #3d424d;
+            padding-top: 20px;
+        }
+        .info-section h3 { color: var(--accent-blue); }
+        .info-section p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+
+    </style>
 </head>
 <body>
 
-<h2>📄 Image to PDF Converter</h2>
+<header>
+    <div class="logo">PDF24 CLONE</div>
+    <div class="nav-icons">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-bars" onclick="alert('Menu: Home, Guide, Privacy Policy')"></i>
+    </div>
+</header>
 
-<input type="file" id="imgInput" multiple>
-<br>
-<button onclick="convert()">Convert to PDF</button>
+<div class="container">
+    <h1>Images to PDF</h1>
+    <p class="subtitle">User friendly web app to convert photos and other images to PDF quickly and easily</p>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <div class="ad-placeholder">ADVERTISEMENT (Top)</div>
+
+    <div class="tool-card" id="dropArea">
+        <input id="fileInput" type="file" accept="image/*" multiple style="display:none;">
+        
+        <button class="btn-main" onclick="document.getElementById('fileInput').click()">
+            Choose files
+        </button>
+        
+        <p style="margin-top:20px; color: var(--text-dim);">... or drop files here</p>
+        
+        <div id="preview"></div>
+        <p id="count" style="margin-top:15px; font-weight: bold; color: var(--accent-blue);"></p>
+        
+        <button id="convertBtn" class="btn-main convert-btn" onclick="convert()">
+            Convert to PDF
+        </button>
+        
+        <p id="status" style="margin-top:10px; font-style: italic;"></p>
+    </div>
+
+    <div class="ad-placeholder">ADVERTISEMENT (Bottom)</div>
+
+    <div class="info-section">
+        <h3>Information / Guide</h3>
+        <p>✔ 100% Free: Thanks to advertising, this tool is free for everyone.</p>
+        <p>✔ Secure: Your files never leave your browser, conversion happens locally.</p>
+        <p>✔ No Limits: Convert as many images as you want without registration.</p>
+    </div>
+</div>
 
 <script>
-async function convert() {
-  const files = document.getElementById("imgInput").files;
+let images = [];
+const input = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+const countText = document.getElementById("count");
+const convertBtn = document.getElementById("convertBtn");
+const dropArea = document.getElementById("dropArea");
 
-  if (files.length === 0) {
-    alert("Image select karo!");
-    return;
-  }
+// File Selection
+input.addEventListener("change", function() {
+    if (this.files.length > 0) addFiles(this.files);
+});
 
-  const { jsPDF } = window.jspdf;
+// Drag & Drop Logic
+dropArea.addEventListener("dragover", e => { e.preventDefault(); dropArea.style.borderColor = "#3498db"; });
+dropArea.addEventListener("dragleave", () => { dropArea.style.borderColor = "#454d5d"; });
+dropArea.addEventListener("drop", e => {
+    e.preventDefault();
+    dropArea.style.borderColor = "#454d5d";
+    addFiles(e.dataTransfer.files);
+});
 
-  // A4 size (portrait)
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4"
-  });
+function addFiles(files) {
+    Array.from(files).forEach(file => {
+        if (!file.type.startsWith("image/")) return;
+        const url = URL.createObjectURL(file);
+        images.push({file, url});
 
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-
-  const margin = 15; // space from all sides
-
-  for (let i = 0; i < files.length; i++) {
-    const reader = new FileReader();
-
-    await new Promise(resolve => {
-      reader.onload = function(e) {
-        let img = new Image();
-        img.src = e.target.result;
-
-        img.onload = function() {
-
-          // Fit image inside page with margin
-          const maxWidth = pageWidth - margin * 2;
-          const maxHeight = pageHeight - margin * 2;
-
-          const ratio = Math.min(
-            maxWidth / img.width,
-            maxHeight / img.height
-          );
-
-          const width = img.width * ratio;
-          const height = img.height * ratio;
-
-          // Center position
-          const x = (pageWidth - width) / 2;
-          const y = (pageHeight - height) / 2;
-
-          if (i > 0) pdf.addPage();
-
-          pdf.addImage(img, 'JPEG', x, y, width, height);
-          resolve();
-        };
-      };
-
-      reader.readAsDataURL(files[i]);
+        const img = document.createElement("img");
+        img.src = url;
+        preview.appendChild(img);
     });
-  }
+    countText.innerText = images.length + " images selected";
+    if(images.length > 0) convertBtn.style.display = "inline-block";
+}
 
-  pdf.save("output.pdf");
+async function convert() {
+    if (images.length === 0) return;
+    
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    document.getElementById("status").innerText = "Processing...";
+
+    for (let i = 0; i < images.length; i++) {
+        const img = await loadImage(images[i].url);
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        let imgWidth = pageWidth - 20; // Margin
+        let imgHeight = (img.height * imgWidth) / img.width;
+
+        if (imgHeight > (pageHeight - 20)) {
+            imgHeight = pageHeight - 20;
+            imgWidth = (img.width * imgHeight) / img.height;
+        }
+
+        const x = (pageWidth - imgWidth) / 2;
+        const y = (pageHeight - imgHeight) / 2;
+
+        if (i !== 0) pdf.addPage();
+        pdf.addImage(img, "JPEG", x, y, imgWidth, imgHeight);
+        document.getElementById("status").innerText = `Processing ${i+1}/${images.length}`;
+    }
+
+    pdf.save("converted-images.pdf");
+    document.getElementById("status").innerText = "Done ✅ Downloaded!";
+}
+
+function loadImage(src) {
+    return new Promise(resolve => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => resolve(img);
+    });
 }
 </script>
 
